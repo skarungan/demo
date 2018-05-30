@@ -1,0 +1,57 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "IAM Bucket Policy"
+
+Parameters:
+  InputBucket:
+    Type: String
+    Description: InputBucketName
+  OutputBucket:
+    Type: String
+    Description: OutputBucket
+
+Resources:
+  InputBucketPolicy:
+  Type: "AWS::S3::BucketPolicy"
+  Properties:
+    Bucket: !Ref InputBucket
+    PolicyDocument:
+      Statement:
+        -
+          Action:
+            - "s3:GetObject"
+            - "s3:ListBucket",
+            - "s3:GetObjectTagging",
+            - "s3:PutObject",
+            - "s3:PutObjectTagging"
+          Effect: "Allow"
+          Resource:
+            - !Sub "arn:aws:s3:::${InputBucket}"
+            - !Sub "arn:aws:s3:::${InputBucket}/*"
+          Principal:
+            -
+              - arn:aws:iam::AccountID:role/Role
+              - arn:aws:iam::AccountID:role/User
+
+  OutputBucketPolicy:
+  Type: "AWS::S3::BucketPolicy"
+  Properties:
+    Bucket: !Ref OutputBucket
+    PolicyDocument:
+      Statement:
+        -
+          Action:
+            - "s3:GetObject"
+            - "s3:ListBucket",
+            - "s3:PutObject",
+            - "s3:PutObjectTagging"
+            - "s3:GetObjectTagging",
+            - "s3:PutObject",
+            - "s3:PutObjectTagging"
+          Effect: "Allow"
+          Resource:
+            - !Sub "arn:aws:s3:::${OutputBucket}"
+            - !Sub "arn:aws:s3:::${OutputBucket}/*"
+          Principal:
+            -
+              - arn:aws:iam::AccountID:role/Role
+              - arn:aws:iam::AccountID:role/User
